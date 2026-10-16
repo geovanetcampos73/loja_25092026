@@ -1,5 +1,12 @@
 package com.data.loca_veiculos.loca_veiculos;
 
+import java.sql.Connection;//RESPONSÁVEL PELA CONEXÃO COM O BANCO
+import java.sql.DriverManager; // DRIVER OU MOTOR DE QUAL BANCO NO CASO MYSQL
+import java.sql.PreparedStatement; //PREPARA O SQL PARA SER EXECUTADO
+import java.sql.ResultSet; //GUARDA O RESULTADO DE UMA CONSULTA SELECT
+import java.sql.SQLException; // TRATA ERROS DO SQL 
+import javax.swing.JOptionPane;//BIBLIOTECA DE CLASSES PAR GERAR MENSAGENS DE DIALOGO
+
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
@@ -35,14 +42,26 @@ public class Login_Frame extends javax.swing.JFrame {
         jTxtusuario = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jTxtsenha = new javax.swing.JPasswordField();
+        JBtnRegistrar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jBtnacessar.setText("Acessar");
         jBtnacessar.setToolTipText("Clique aqui para acessar sistema");
+        jBtnacessar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jBtnacessarMouseClicked(evt);
+            }
+        });
+        jBtnacessar.addActionListener(this::jBtnacessarActionPerformed);
 
         jBtnsair.setText("Sair");
         jBtnsair.setToolTipText("Clique aqui par sair do sistema");
+        jBtnsair.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jBtnsairMouseClicked(evt);
+            }
+        });
 
         jLabel1.setText("Nome do usuário");
 
@@ -52,6 +71,14 @@ public class Login_Frame extends javax.swing.JFrame {
 
         jTxtsenha.addActionListener(this::jTxtsenhaActionPerformed);
 
+        JBtnRegistrar.setText("Registre-se");
+        JBtnRegistrar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                JBtnRegistrarMouseClicked(evt);
+            }
+        });
+        JBtnRegistrar.addActionListener(this::JBtnRegistrarActionPerformed);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -60,15 +87,16 @@ public class Login_Frame extends javax.swing.JFrame {
                 .addGap(54, 54, 54)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jBtnacessar, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jBtnsair, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                         .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 146, Short.MAX_VALUE)
                         .addComponent(jTxtusuario, javax.swing.GroupLayout.Alignment.LEADING))
-                    .addComponent(jTxtsenha, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(79, Short.MAX_VALUE))
+                    .addComponent(jTxtsenha, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jBtnacessar, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jBtnsair, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(JBtnRegistrar, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(73, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -81,14 +109,17 @@ public class Login_Frame extends javax.swing.JFrame {
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jTxtsenha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jBtnacessar, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jBtnsair, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(56, 56, 56))
+                .addGap(18, 18, 18)
+                .addComponent(JBtnRegistrar, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(38, 38, 38))
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void jTxtusuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTxtusuarioActionPerformed
@@ -98,6 +129,94 @@ public class Login_Frame extends javax.swing.JFrame {
     private void jTxtsenhaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTxtsenhaActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTxtsenhaActionPerformed
+
+    private void jBtnacessarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnacessarActionPerformed
+        String url = "jdbc:mysql://localhost:3306/sistema?useSSL=false&serverTimezone=UTC";
+        String usuario = "root"; // Substitua pelo seu usuário do MySQL
+        String senha = "123456"; // Substitua pela sua senha do MySQL
+
+        // Comando SQL para consultar a tabela login
+        String sql = "SELECT * FROM login where login='"+jTxtusuario.getText()+"' and senha='"+jTxtsenha.getText()+"'";
+
+        // Conectando e executando a consulta
+        try (Connection conexao = DriverManager.getConnection(url, usuario, senha);
+             PreparedStatement stmt = conexao.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            System.out.println("Conexão realizada com sucesso!\n--- Lista de Logins ---");
+
+            // Percorrendo os resultados da tabela
+            
+            while (rs.next()) {
+                
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Erro ao conectar ou consultar o banco de dados: " + e.getMessage());
+        }        // TODO add your handling code here:
+    }//GEN-LAST:event_jBtnacessarActionPerformed
+
+    private void jBtnacessarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jBtnacessarMouseClicked
+        String url = "jdbc:mysql://localhost:3306/sistema?useSSL=false&serverTimezone=UTC";
+        String usuario = "root"; // Substitua pelo seu usuário do MySQL
+        String senha = "123456"; // Substitua pela sua senha do MySQL
+        String sql = "SELECT * FROM login where login='"+jTxtusuario.getText()+"' and senha='"+jTxtsenha.getText()+"'";          
+        
+        if (jTxtusuario.getText().length()==0)
+        {
+            JOptionPane.showMessageDialog(null, 
+                    "O nome do usuário é obrigatório!");
+            return;//AQUI PARAMOS O PROGRAMA
+        }
+        if (jTxtsenha.getText().length()==0)
+        {
+            JOptionPane.showMessageDialog(null, 
+                    "A senha do usuário é obrigatório!");
+            return;//AQUI PARAMOS O PROGRAMA
+        }
+        
+        try (Connection conexao = DriverManager.getConnection(url, usuario, senha);
+             PreparedStatement dec_sql = conexao.prepareStatement(sql);
+             ResultSet rslogin = dec_sql.executeQuery()) {
+             
+             if (rslogin.next()){ //SE EU CONSEGUIR IR PRO PRIMEIRO REGISTRO
+                //chama a tela principal
+                Menu_Frame menu=new Menu_Frame();
+                menu.setVisible(true);
+             }
+             else
+                  JOptionPane.showMessageDialog(null, 
+                    "Usuário ou senha inválidos.");
+        } catch (SQLException e) {
+            
+            System.err.println("Erro ao conectar ou consultar o banco de dados: " + e.getMessage());
+        }       
+        
+        
+        /*if (jTxtusuario.getText().equals("GEOVANE") & 
+            jTxtsenha.getText().equals("123")){
+            Menu_Frame menu=new Menu_Frame();
+            menu.setVisible(true);
+        }
+        else
+            JOptionPane.showMessageDialog(null, 
+                    "Usuário ou senha inválidos.");
+        
+        */
+    }//GEN-LAST:event_jBtnacessarMouseClicked
+
+    private void jBtnsairMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jBtnsairMouseClicked
+        System.exit(0);
+    }//GEN-LAST:event_jBtnsairMouseClicked
+
+    private void JBtnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JBtnRegistrarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_JBtnRegistrarActionPerformed
+
+    private void JBtnRegistrarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JBtnRegistrarMouseClicked
+         Cadastra_Usuarios cadUsuarios=new Cadastra_Usuarios();
+         cadUsuarios.setVisible(true);
+    }//GEN-LAST:event_JBtnRegistrarMouseClicked
 
     /**
      * @param args the command line arguments
@@ -125,6 +244,7 @@ public class Login_Frame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton JBtnRegistrar;
     private javax.swing.JButton jBtnacessar;
     private javax.swing.JButton jBtnsair;
     private javax.swing.JLabel jLabel1;
